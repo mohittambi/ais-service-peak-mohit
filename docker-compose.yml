@@ -1,0 +1,15 @@
+version: '3'
+services:
+  api:
+    container_name: ais-service-peak-mohit
+    build: .
+    volumes:
+      - .:/usr/src/app
+      - $HOME/.aws:/root/.aws
+    ports:
+      - 8970:8970
+    environment:
+      AWS_PROFILE: peak-dev
+      AWS_REGION: eu-west-1
+      SERVICE_NAME: ais-service-peak-mohit
+      DOMAIN: api.dev.peak.ai

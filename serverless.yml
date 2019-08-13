@@ -1,0 +1,40 @@
+service:
+  name: ais-service-peak-mohit
+
+frameworkVersion: "=1.42.3"
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  versionFunctions: false
+  region: eu-west-1
+  stage: ${opt:stage}
+  stackTags:
+    tenant : platform <! CHANGE THIS IF IT IS TENANT SPECIFIC !>
+    feature: <! INSERT THE NAME OF THE FEATURE THIS SERVICE IS PART OF HERE - e.g. ingestion, workspace etc. !>
+    service: <! INSERT YOUR SERVICE NAME HERE !>
+    stage: ${opt:stage}
+  environment:
+    STAGE: ${opt:stage}
+    PROJECT_NAME: ${self:service.name} # used for sending error logs
+
+custom:
+  customDomain: # only required if the service uses http events
+    basePath: "peak-mohit"
+    domainName: ${env:DOMAIN}
+    stage: "${opt:stage}"
+    createRoute53Record: true
+
+functions:
+  test:
+    handler: handlers/index.handler
+    events:
+      - http:
+          path: /
+          method: get
+          cors: true
+
+plugins:
+  - serverless-jetpack
+  - serverless-domain-manager
+  - serverless-offline
