@@ -18,23 +18,44 @@ provider:
     STAGE: ${opt:stage}
     PROJECT_NAME: ${self:service.name} # used for sending error logs
 
-custom:
-  customDomain: # only required if the service uses http events
-    basePath: "peak-mohit"
-    domainName: ${env:DOMAIN}
-    stage: "${opt:stage}"
-    createRoute53Record: true
+# custom:
+#   customDomain: # only required if the service uses http events
+#     basePath: "peak-mohit"
+#     domainName: ${env:DOMAIN}
+#     stage: "${opt:stage}"
+#     createRoute53Record: true
 
 functions:
-  test:
+  fruitsList:
     handler: handlers/index.handler
     events:
       - http:
           path: /
           method: get
           cors: true
+  fruitsCreate:
+    handler: handlers/create.handler
+    events:
+      - http:
+          path: /create
+          method: post
+          cors: true
+  fruitsUpdate:
+    handler: handlers/update.handler
+    events:
+      - http:
+          path: /update/{id}
+          method: post
+          cors: true
+  fruitsDelete:
+    handler: handlers/delete.handler
+    events:
+      - http:
+          path: /{id}
+          method: delete
+          cors: true
 
 plugins:
-  - serverless-jetpack
-  - serverless-domain-manager
+  # - serverless-jetpack
+  # - serverless-domain-manager
   - serverless-offline
