@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "build": "yarn run clean; docker-compose build",
-    "start": "yarn run clean; docker-compose up -d",
+    "start": "yarn run clean; docker-compose up",
     "clean": "docker rm --force $(docker ps -a -q --filter ancestor=ais-service-peak-mohit)",
     "test": "jest",
     "lint": "eslint src/ --fix"

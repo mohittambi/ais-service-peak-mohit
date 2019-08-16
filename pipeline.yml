@@ -55,12 +55,24 @@ Resources:
           IgnorePublicAcls: true
           BlockPublicPolicy: true
           RestrictPublicBuckets: true
+  FruitsTable: 
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      TableName: Fruits
+      AttributeDefinitions: 
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
   Pipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
       DisableInboundStageTransitions:
-        -
-          StageName: Deploy
+        - StageName: Deploy
           Reason: 'Disable transition until ready to deploy.'
       RoleArn: !GetAtt PipelineRole.Arn
       Name: !Ref AWS::StackName
@@ -90,21 +102,21 @@ Resources:
               RunOrder: 1
         - Name: Deploy
           Actions:
-          - Name: NotificationMonitor
-            InputArtifacts: []
-            ActionTypeId:
-              Category: Invoke
-              Owner: AWS
-              Version: '1'
-              Provider: Lambda
-            OutputArtifacts: []
-            Configuration:
-              FunctionName:
-                Ref: NotificationMonitorFunction
-              UserParameters:
-                !Sub |
-                  {"pipeline": "${AWS::StackName}"}
-            RunOrder: 1
+          # - Name: NotificationMonitor
+          #   InputArtifacts: []
+          #   ActionTypeId:
+          #     Category: Invoke
+          #     Owner: AWS
+          #     Version: '1'
+          #     Provider: Lambda
+          #   OutputArtifacts: []
+          #   Configuration:
+          #     FunctionName:
+          #       Ref: NotificationMonitorFunction
+          #     UserParameters:
+          #       !Sub |
+          #         {"pipeline": "${AWS::StackName}"}
+          #   RunOrder: 1
           - Name: DeployBackend
             ActionTypeId:
                 Category: Build
@@ -192,13 +204,10 @@ Resources:
           phases:
             install:
               commands:
-                - apt-get update -y
                 - echo "//registry.npmjs.org/:_authToken="$NPM_AUTH_TOKEN > .npmrc
                 - npm install -g serverless@$SERVERLESS_VERSION
                 - npm install -g yarn
                 - make install
-                - make tests-unit
-                - make graphql-deploy
             build:
               commands:
                 - make deploy stage=$STAGE
@@ -286,5 +295,13 @@ Resources:
                   - sqs:CreateQueue
                   - sqs:GetQueueAttributes
                   - sqs:DeleteQueue
-                  - sqs:SetQueueAttributes
+                  - sqs:SetQueueAttributes'
+                  - dynamodb:DescribeTable
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
                 Resource: "*"
+                
