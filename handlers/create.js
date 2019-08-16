@@ -9,7 +9,6 @@ async function createFruit(event) {
   let responseBody = "";
   let statusCode = 0;
 
-  console.log(event.body);
   const { id, name, quantity } = JSON.parse(event.body);
 
   const params = {
@@ -23,19 +22,20 @@ async function createFruit(event) {
 
   try {
     const data = await documentClient.put(params).promise();
-    console.log(data);
+
     responseBody = JSON.stringify(data);
     statusCode = 201;
+
   } catch (err) {
     responseBody = `Unable to put product: ${err}`;
     statusCode = 403;
   }
 
   const response = {
-    statusCode: statusCode,
     headers: {
       "Content-Type": "application/json"
     },
+    statusCode: statusCode,
     body: responseBody
   };
 
