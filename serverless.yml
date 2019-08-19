@@ -30,28 +30,39 @@ functions:
     handler: handlers/index.handler
     events:
       - http:
-          path: /
+          path: /fruits/
           method: get
           cors: true
   fruitsCreate:
     handler: handlers/create.handler
     events:
       - http:
-          path: /create
+          path: /fruit/create
           method: post
           cors: true
-  fruitsUpdate:
-    handler: handlers/update.handler
+  fruitsUpdateGet:
+    handler: handlers/update.getData
     events:
       - http:
-          path: /update/{id}
+          path: /fruit/{id}/update/
+          method: get
+          cors: true
+          request: 
+            parameters: 
+              paths: 
+                id: true
+  fruitsUpdatePost:
+    handler: handlers/update.postData
+    events:
+      - http:
+          path: /fruit/{id}/update/
           method: post
           cors: true
   fruitsDelete:
     handler: handlers/delete.handler
     events:
       - http:
-          path: /{id}
+          path: /fruit/{id}/delete/
           method: delete
           cors: true
 
