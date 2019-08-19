@@ -1,48 +1,44 @@
-'use strict'
+'use strict';
 const AWS = require('aws-sdk');
 
 AWS.config.update({ region: "eu-west-1" });
+const documentClient = new AWS.DynamoDB.DocumentClient({ region: "eu-west-1" });
 
-exports.handler = async (event, context) => {
-  const ddb = new AWS.DynamoDB({ apiVersion: "2012-10-08" });
-  const documentClient = new AWS.DynamoDB.DocumentClient({ region: "eu-west-1" });
-
+const fetchFruits = async () => {
   const params = {
-    TableName: "Fruits",
-    Key: {
-      id: "101"
-    }
+    TableName: "Fruits"
   }
+
+  let items;
+  let data = [];
+  let responseBody = '';
+  let statusCode = '';
 
   try {
-    const data = await documentClient.get(params).promise();
-    console.log(data);
+    do {
+      items = await documentClient.scan(params).promise();
+      items.Items.forEach((item) => data.push(item));
+      params.ExclusiveStartKey = items.LastEvaluatedKey;
+    } while (typeof items.LastEvaluatedKey != "undefined");
+    responseBody = JSON.stringify(data);
+    statusCode = 201;
+
   } catch (err) {
-    console.log(err);
+    responseBody = `Unable to get fruit data: ${err}`;
+    statusCode = 403;
   }
 
-}
-
-let data = [{
-  id: 1,
-  name: "apple",
-  quantity: "10"
-},
-{
-  id: 2,
-  name: "orange",
-  quantity: "3"
-}];
-
-async function storeData(event) {
-  // console.log(event);
-  console.log("HELLO Mr");
-  return {
-    statusCode: 200,
-    body: JSON.stringify(data)
+  const response = {
+    headers: {
+      "Content-Type": "application/json"
+    },
+    statusCode: statusCode,
+    body: responseBody
   };
+
+  return response;
 }
 
 module.exports = {
-  handler: storeData,
+  handler: fetchFruits,
 };

@@ -9,12 +9,12 @@ exports.handler = async (event, context) => {
   let responseBody = "";
   let statusCode = 0;
 
-  const { id } = event.pathParameters;
+  const id = JSON.parse(event.pathParameters.id);
 
   const params = {
     TableName: "Fruits",
     Key: {
-      id: id
+      id: `${id}`
     }
   };
 
