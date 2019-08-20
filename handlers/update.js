@@ -4,14 +4,16 @@ const AWS = require('aws-sdk');
 AWS.config.update({ region: "eu-west-1" });
 const documentClient = new AWS.DynamoDB.DocumentClient({ region: "eu-west-1" });
 
+const tableName = 'Flora';
+
 async function getData(event) {
   let responseBody = "";
   let statusCode = 0;
 
-  const id = JSON.parse(event.pathParameters.id);
+  const id = event.pathParameters.id;
 
   const params = {
-    TableName: "Fruits",
+    TableName: tableName,
     KeyConditionExpression: "#id = :idValue",
     ExpressionAttributeNames: {
       "#id": "id"
@@ -46,12 +48,13 @@ async function postData(event) {
   let responseBody = "";
   let statusCode = 0;
 
-  const { id, name, quantity } = JSON.parse(event.body);
+  const { id, typeName, name, quantity } = JSON.parse(event.body);
 
   const params = {
-    TableName: "Fruits",
+    TableName: tableName,
     Item: {
       id: id,
+      type: typeName,
       name: name,
       quantity: quantity
     }
