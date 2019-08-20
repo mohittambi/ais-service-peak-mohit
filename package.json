@@ -9,8 +9,7 @@
   "scripts": {
     "build": "yarn run clean; docker-compose build",
     "start": "yarn run clean; docker-compose up",
-    "clean": "docker rm --force $(docker ps -a -q --filter ancestor=ais-service-peak-mohit)",
-    "test": "jest"
+    "clean": "docker rm --force $(docker ps -a -q --filter ancestor=ais-service-peak-mohit)"
   },
   "dependencies": {
     "@peak-ai/ais-service-discovery": "^0.0.10-alpha",
@@ -31,10 +30,6 @@
     "serverless-jetpack": "^0.3.0",
     "serverless-pseudo-parameters": "^2.4.0"
   },
-  "pre-commit": [
-    "lint",
-    "test"
-  ],
   "jest": {
     "testEnvironment": "node"
   }
