@@ -1,20 +1,19 @@
 'use strict';
 const AWS = require('aws-sdk');
-
 AWS.config.update({ region: "eu-west-1" });
-
 const documentClient = new AWS.DynamoDB.DocumentClient({ region: "eu-west-1" });
 
 async function createFruit(event) {
   let responseBody = "";
   let statusCode = 0;
 
-  const { id, name, quantity } = JSON.parse(event.body);
+  const { id, typeName, name, quantity } = JSON.parse(event.body);
 
   const params = {
-    TableName: "Fruits",
+    TableName: "Flora",
     Item: {
       id: id,
+      type: typeName,
       name: name,
       quantity: quantity
     }

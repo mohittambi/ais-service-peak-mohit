@@ -6,7 +6,7 @@ const documentClient = new AWS.DynamoDB.DocumentClient({ region: "eu-west-1" });
 
 const fetchFruits = async () => {
   const params = {
-    TableName: "Fruits"
+    TableName: "Flora"
   }
 
   let items;

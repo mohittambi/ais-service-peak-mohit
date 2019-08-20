@@ -10,16 +10,14 @@
     "build": "yarn run clean; docker-compose build",
     "start": "yarn run clean; docker-compose up",
     "clean": "docker rm --force $(docker ps -a -q --filter ancestor=ais-service-peak-mohit)",
-    "test": "jest",
-    "lint": "eslint src/ --fix"
+    "test": "jest"
   },
   "dependencies": {
     "@peak-ai/ais-service-discovery": "^0.0.10-alpha",
     "@peak-ai/jedlik": "^0.0.3-alpha-3",
     "awilix": "^4.2.2",
     "aws-sdk": "^2.438.0",
-    "global": "^4.3.2",
-    "uuid": "^3.3.2"
+    "global": "^4.3.2"
   },
   "devDependencies": {
     "glob": "^7.1.3",

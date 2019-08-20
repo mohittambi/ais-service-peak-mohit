@@ -3,18 +3,19 @@ const AWS = require('aws-sdk');
 
 AWS.config.update({ region: "eu-west-1" });
 
-exports.handler = async (event, context) => {
+async function deleteFruit(event) {
   const documentClient = new AWS.DynamoDB.DocumentClient({ region: "eu-west-1" });
 
   let responseBody = "";
   let statusCode = 0;
 
-  const id = JSON.parse(event.pathParameters.id);
+  const id = event.pathParameters.id;
 
   const params = {
-    TableName: "Fruits",
+    TableName: "Flora",
     Key: {
-      id: `${id}`
+      id,
+      "type": "Fruit"
     }
   };
 
@@ -36,4 +37,8 @@ exports.handler = async (event, context) => {
   };
 
   return response;
+};
+
+module.exports = {
+  handler: deleteFruit
 };
