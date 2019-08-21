@@ -72,16 +72,28 @@ Resources:
       ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+      GlobalSecondaryIndexes: 
+        - IndexName: typeGSI
+          KeySchema: 
+            - AttributeName: type
+              KeyType: HASH
+          Projection:
+            NonKeyAttributes: 
+              - id
+              - name
+              - quantity
+            ProjectionType: INCLUDE
+          ProvisionedThroughput: 
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
   SaladTable: 
     Type: AWS::DynamoDB::Table
     Properties: 
       TableName: Salad
       AttributeDefinitions: 
-        - AttributeName: id
-          AttributeType: S
+        - {AttributeName: id, AttributeType: S}
       KeySchema:
-        - AttributeName: id
-          KeyType: HASH
+        - {AttributeName: id, KeyType: HASH}
       ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1

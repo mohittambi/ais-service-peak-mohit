@@ -1,22 +1,32 @@
 'use strict';
 const AWS = require('aws-sdk');
-
 AWS.config.update({ region: "eu-west-1" });
 const documentClient = new AWS.DynamoDB.DocumentClient({ region: "eu-west-1" });
 
-const fetchFruits = async () => {
-  const params = {
-    TableName: "Flora"
-  }
+const tableName = 'Flora';
+const typeName = 'Vegetable';
 
+async function fetchVegetables() {
+  let responseBody = "";
+  let statusCode = 0;
   let items;
   let data = [];
-  let responseBody = '';
-  let statusCode = '';
+
+  const params = {
+    TableName: tableName,
+    IndexName: 'typeGSI',
+    KeyConditionExpression: "#type = :typeValue",
+    ExpressionAttributeNames: {
+      "#type": "type"
+    },
+    ExpressionAttributeValues: {
+      ":typeValue": `${typeName}`
+    }
+  }
 
   try {
     do {
-      items = await documentClient.scan(params).promise();
+      items = await documentClient.query(params).promise();
       items.Items.forEach((item) => data.push(item));
       params.ExclusiveStartKey = items.LastEvaluatedKey;
     } while (typeof items.LastEvaluatedKey != "undefined");
@@ -24,7 +34,7 @@ const fetchFruits = async () => {
     statusCode = 201;
 
   } catch (err) {
-    responseBody = `Unable to get fruit data: ${err}`;
+    responseBody = `Unable to get vegetable data: ${err}`;
     statusCode = 403;
   }
 
@@ -40,5 +50,5 @@ const fetchFruits = async () => {
 }
 
 module.exports = {
-  handler: fetchFruits,
+  handler: fetchVegetables,
 };
