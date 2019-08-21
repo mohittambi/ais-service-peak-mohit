@@ -1,21 +1,22 @@
 'use strict';
 const AWS = require('aws-sdk');
-
 AWS.config.update({ region: "eu-west-1" });
+const documentClient = new AWS.DynamoDB.DocumentClient({ region: "eu-west-1" });
+
+const tableName = 'Flora';
+const typeName = 'Fruit';
 
 async function deleteFruit(event) {
-  const documentClient = new AWS.DynamoDB.DocumentClient({ region: "eu-west-1" });
-
   let responseBody = "";
   let statusCode = 0;
 
   const id = event.pathParameters.id;
 
   const params = {
-    TableName: "Flora",
+    TableName: tableName,
     Key: {
       id,
-      "type": "Fruit"
+      "type": typeName
     }
   };
 
