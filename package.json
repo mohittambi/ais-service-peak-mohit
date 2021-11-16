@@ -15,7 +15,7 @@
     "@peak-ai/ais-service-discovery": "^0.0.10-alpha",
     "@peak-ai/jedlik": "^0.0.3-alpha-3",
     "awilix": "^4.2.2",
-    "aws-sdk": "^2.438.0",
+    "aws-sdk": "^2.814.0",
     "global": "^4.3.2"
   },
   "devDependencies": {
